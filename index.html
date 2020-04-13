@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Werte - Test</title>
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css">
+    <style>
+        .contents{
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- Buefy components goes here -->
+    <div class="section">
+        <div class="contents">
+            <h1 class="is-size-3" style="margin-bottom: 1rem;">Werte - Test</h1>
+        </div>
+        <div class="contents step-0" v-if="env.page === 0">
+            <b-button type="is-success" @click="env.page += 1">Werte - Test Starten</b-button>
+        </div>
+        <div class="contents step-1" v-if="env.page === 1">
+            <h2 class="is-size-4" style="margin-bottom: 1rem;">Bitte wähle {{env.amountOfPreselected}} Werte</h2>
+            <div class="buttons">
+                <b-button v-for="value in values" :type="value.checked ? 'is-info' : ''" @click="value.checked = !value.checked" :disabled="!value.checked && chosenValues.length >= env.amountOfPreselected">{{value.name}}</b-button>
+            </div>
+            <b-button type="is-success" v-if="chosenValues.length === env.amountOfPreselected" @click="env.page += 1">Weiter</b-button>
+            <b-button v-else disabled>Noch {{env.amountOfPreselected - chosenValues.length}} Werte wählen</b-button>
+        </div>
+        <div class="contents step-2" v-if="env.page === 2">
+            <h2 class="is-size-4" style="margin-bottom: 1rem;">Wäge nun ab, welcher dieser beiden Werte dir wichtiger ist.</h2>
+            <div class="buttons">
+                <b-button @click="chose(0)">{{chosenValues[pairs[env.choosePage][0]].name}}</b-button>
+                <b-button @click="chose(1)">{{chosenValues[pairs[env.choosePage][1]].name}}</b-button>
+            </div>
+        </div>
+        <div class="contents step-3" v-if="env.page === 3">
+            <h2 class="is-size-4" style="margin-bottom: 1rem;">Hier sind deine wichtigsten Werte</h2>
+            <div class="list is-hoverable">
+                <div class="list-item" v-for="winner in winners">
+                    {{winner.name}} ({{winner.score}} Punkte)
+                </div>
+            </div>
+            <b-button type="is-success" @click="reset()">Zum Anfang</b-button>
+        </div>
+    </div>
+</div>
+
+<!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script src="https://unpkg.com/vue-clipboard2/dist/vue-clipboard.min.js"></script>
+
+<!-- Full bundle -->
+<script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data(){
+            return {
+                env: {
+                    amountOfPreselected: 12,
+                    amountOfWinners: 3,
+                    page: 0,
+                    choosePage: 0
+                },
+                valuesList: [
+                    'Abenteuer',
+                    'Achtsamkeit',
+                    'Akzeptanz',
+                    'Authentizität',
+                    'Balance',
+                    'Beliebtheit',
+                    'Bescheidenheit',
+                    'Dankbarkeit',
+                    'Disziplin',
+                    'Effizienz',
+                    'Ehrlichkeit',
+                    'Empathie',
+                    'Entwicklung',
+                    'Erfolg',
+                    'Fairness',
+                    'Fantasie',
+                    'Flexibilität',
+                    'Freiheit',
+                    'Fröhlichkeit',
+                    'Geduld',
+                    'Gelassenheit',
+                    'Gerechtigkeit',
+                    'Gesundheit',
+                    'Glaubwürdigkeit',
+                    'Großzügigkeit',
+                    'Harmonie',
+                    'Herzlichkeit',
+                    'Hilfsbereitschaft',
+                    'Humor',
+                    'Intuition',
+                    'Kontrolle',
+                    'Kreativität',
+                    'Leichtigkeit',
+                    'Leidenschaft',
+                    'Liebe',
+                    'Loyalität',
+                    'Mitgefühl',
+                    'Mut',
+                    'Nachhaltigkeit',
+                    'Nähe',
+                    'Offenheit',
+                    'Optimismus',
+                    'Ordnung',
+                    'Perfektion',
+                    'Realismus',
+                    'Respekt',
+                    'Sanftmut',
+                    'Selbstständigkeit',
+                    'Sensibilität',
+                    'Sicherheit',
+                    'Spaß',
+                    'Spiritualität',
+                    'Toleranz',
+                    'Tradition',
+                    'Transparenz',
+                    'Treue',
+                    'Unabhängigkeit',
+                    'Verantwortung',
+                    'Verlässlichkeit',
+                    'Vertrauen',
+                    'Weisheit',
+                    'Wissen',
+                    'Wohlstand',
+                    'Zugehörigkeit',
+                    'Zuverlässigkeit'
+                ],
+                values: []
+            }
+        },
+        methods: {
+            chose(number){
+                this.chosenValues[this.pairs[this.env.choosePage][number]].score += 1;
+                if((this.env.choosePage + 1) === this.pairs.length){
+                    this.env.page += 1;
+                    return;
+                }
+                this.env.choosePage+= 1;
+            },
+            reset(){
+                this.values = [];
+                this.valuesList.forEach(v => {
+                    this.values.push({
+                        name: v,
+                        score: 0,
+                        checked: false
+                    });
+                });
+                this.env.page = 0
+                this.env.choosePage = 0;
+            }
+        },
+        created(){
+            this.reset();
+        },
+        computed: {
+            chosenValues(){
+                return this.values.filter(v => v.checked);
+            },
+            pairs(){
+                let p = [];
+                for (i = 1; i < this.env.amountOfPreselected; i++) {
+                    let prime = this.env.amountOfPreselected - i;
+                    for (j = 1; j <= prime; j++) {
+                        p.push([prime,prime-j]);
+                    }
+                }
+                return p;
+            },
+            winners(){
+                let w = [];
+                function compare(a, b) {
+                    if (a.score > b.score) return -1;
+                    if (b.score > a.score) return 1;
+
+                    return 0;
+                }
+
+                w = this.chosenValues.sort(compare);
+                w.length = this.env.amountOfWinners;
+
+                return w;
+            }
+        }
+    });
+</script>
+</body>
+</html>

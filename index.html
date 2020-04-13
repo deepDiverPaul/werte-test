@@ -10,7 +10,13 @@
     <style>
         .contents{
             max-width: 600px;
-            margin: 0 auto;
+            margin: 1em auto;
+        }
+        .contents:first-child{
+            margin-top: 0;
+        }
+        .contents:last-child{
+            margin-top: 2em;
         }
     </style>
 </head>
@@ -30,7 +36,7 @@
                 <b-button v-for="value in values" :type="value.checked ? 'is-info' : ''" @click="value.checked = !value.checked" :disabled="!value.checked && chosenValues.length >= env.amountOfPreselected">{{value.name}}</b-button>
             </div>
             <b-button type="is-success" v-if="chosenValues.length === env.amountOfPreselected" @click="env.page += 1">Weiter</b-button>
-            <b-button v-else disabled>Noch {{env.amountOfPreselected - chosenValues.length}} Werte wählen</b-button>
+            <b-button type="is-info" v-else disabled>Noch {{env.amountOfPreselected - chosenValues.length}} Werte wählen</b-button>
         </div>
         <div class="contents step-2" v-if="env.page === 2">
             <h2 class="is-size-4" style="margin-bottom: 1rem;">Wäge nun ab, welcher dieser beiden Werte dir wichtiger ist.</h2>
@@ -48,13 +54,24 @@
             </div>
             <b-button type="is-success" @click="reset()">Zum Anfang</b-button>
         </div>
+        <div class="contents">
+            <div class="field is-grouped is-grouped-multiline">
+                <div class="control">
+                        <a class="tag" target="_blank" href="https://github.com/deepDiverPaul/werte-test">Quellcode</a>
+                </div>
+                <div class="control">
+                        <a class="tag" target="_blank" href="https://www.paul-spenke.de/impressum">Impressum</a>
+                </div>
+                <div class="control">
+                        <a class="tag" target="_blank" href="https://www.paul-spenke.de/datenschutz">Datenschutzerklärung</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
-<script src="https://unpkg.com/vue-clipboard2/dist/vue-clipboard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
 
 <!-- Full bundle -->
 <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
